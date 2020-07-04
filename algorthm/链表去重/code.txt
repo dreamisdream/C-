@@ -1,0 +1,73 @@
+#include <iostream>
+#include <stdarg.h>
+using namespace std;
+
+struct Node
+{
+	int data;
+	Node *next;
+};
+
+Node * create(int n, ...) {
+	Node *head = (Node*)malloc(sizeof(Node));
+	Node *p = head;
+	va_list valist;
+	va_start(valist, n);
+	for (int i = 0; i < n; ++i) {
+		Node *temp = (Node *)malloc(sizeof(Node));
+		temp->data = va_arg(valist, int);
+		temp->next = nullptr;
+		p->next = temp;
+		p = p->next;
+	}
+	return head;
+}
+
+Node *quChong(Node *head) {
+	if (head == nullptr || head->next == nullptr)
+		return head;
+
+	Node *prere = head;
+	Node *pre=head->next;
+	Node *p=head->next->next;
+	Node *pNext = nullptr;
+
+	int flag = 0;
+	while (p != nullptr) {
+		pNext = p->next;
+		if (pre->data == p->data) {
+			pre->next = pNext;
+			free(p);
+			flag = 1;
+		}
+		else
+		{
+			if (flag == 1)
+			{
+				prere->next = p;
+				free(pre);
+				pre = p;
+				flag = 0;
+			}
+			else
+			{
+				prere = pre;
+				pre = p;
+			}
+		}
+		p = pNext;
+	}
+	if (flag)
+		prere->next = p;
+	return head;
+}
+int main(){
+	Node *head = create(5,1,1,2,2,3);
+	Node *temp = quChong(head);
+	temp = temp->next;
+	while (temp) {
+		cout << temp->data << " ";
+		temp = temp->next;
+	}
+    return 0;
+}
