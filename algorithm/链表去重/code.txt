@@ -22,7 +22,6 @@ Node * create(int n, ...) {
 	}
 	return head;
 }
-
 Node *quChong(Node *head) {
 	if (head == nullptr || head->next == nullptr)
 		return head;
