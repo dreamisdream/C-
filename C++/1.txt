@@ -1,0 +1,3 @@
+mary male 25
+sad male 34
+sdad female 45
