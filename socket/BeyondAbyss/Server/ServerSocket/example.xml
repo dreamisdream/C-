@@ -1,0 +1,29 @@
+<info>
+    <sql server="127.0.0.1" port="3306" username="root" password="root" database="beyondabyss" />
+</info>
+
+
+<ToDo>
+    <Item priority="host"> 
+        127.0.0.1 
+    </Item>
+    <Item priority="root"> 
+        root
+    </Item>
+    <Item priority="password"> 
+        root
+    </Item>
+    <Item priority="database"> 
+        mysql
+    </Item>
+    <Item priority="port"> 
+        3306	
+    </Item>
+</ToDo>
+
+
+<?xml version="1,0" encoding="GBK" ?>
+<root>
+    <host port="3306" user="root" password = "root" databse="mysql" >127.0.0.1</host>
+</root>
+

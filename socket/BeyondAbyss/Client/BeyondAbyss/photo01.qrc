@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/photo01">
+        <file>image/LoginAndRegister/toast_close_black.png</file>
+    </qresource>
+</RCC>
