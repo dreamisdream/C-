@@ -67,6 +67,6 @@ int main(void){
     // cout<<containsPattern(arr,1,3)<<endl;
     // vector<int> arr2{1,2,1,2,1,1,1,3};
     // cout<<containsPattern(arr2,2,2)<<endl;
-    cout<<C++<<endl;
+    cout<<"ddddddd"<<endl; 
     return 0;
 }

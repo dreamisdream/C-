@@ -47,3 +47,11 @@
 //     }
 // }
 // #pragma endregion
+#include <iostream>
+
+using namespace std;
+
+int main(){
+    cout<< "ddddddd"<<endl;
+    return 0;
+}

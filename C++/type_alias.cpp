@@ -12,7 +12,7 @@ constexpr int foo(int i){
 void getNum(){
      ;
 }
-int main(){
+int main00(){
     int i=10;
     array<int,foo(2)> arr;
     assert(arr.size() != foo(10));
@@ -34,4 +34,27 @@ auto hasher = [](const auto& p)    // 定义一个lambda表达式
 
 // 算法
 要求排序后仍然保持元素的相对顺序，应该用 stable_sort，它是稳定的；选出前几名（TopN），应该用 partial_sort；选出前几名，但不要求再排出名次（BestN），应该用 nth_element；中位数（Median）、百分位数（Percentile），还是用 nth_element；按照某种规则把元素划分成两组，用 partition；第一名和最后一名，用 minmax_element。
+#include <vector>
+#include <string>
+#include <algorithm>
 
+using namespace std;
+
+ string getPermutation(int n, int k) {
+    vector<int> ret;
+    for(int i=0;i<n;++n){
+        ret.push_back(i);
+    }
+    while(k--){
+        next_permutation(begin(ret),end(ret));
+    }
+    string str;
+    for(auto i:ret){
+        str.append(i+'0');
+    } 
+    return str;
+}
+int main(){
+    cout<<"dddd"<<endl;
+    return 0;
+}
