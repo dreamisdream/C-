@@ -10,6 +10,7 @@ public:
 private:
 	void init();
 	void sendMessage();
+	void readMessage(SOCKET c);
 	SOCKET client;
 };
 

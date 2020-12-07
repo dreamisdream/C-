@@ -5,6 +5,8 @@
 #include <thread>
 #include <iostream>
 
+using namespace std;
+
 Server::Server()
 {
 	init();
@@ -23,8 +25,12 @@ Server::~Server()
 
 void Server::run()
 {
-	if (flag)
+	if (flag) {
 		std::cout << "创建socket失败" << std::endl;
+	} else {
+		return;
+	}
+
 	while (true) {
 		SOCKADDR_IN m_client;
 		int len = sizeof(SOCKADDR_IN);
@@ -42,7 +48,7 @@ void Server::run()
 void Server::init()
 {
 	WSADATA wsa;
-	int ret =WSAStartup(0x0202, &wsa);
+	int ret = WSAStartup(0x0202, &wsa);
 	m_server = socket(AF_INET, SOCK_STREAM, 0);
 	std::cout << "m_server:" << m_server << std::endl;
 	SOCKADDR_IN addr;
@@ -55,8 +61,8 @@ void Server::init()
 		flag = 1;
 	listen(m_server, 5);
 
-	//std::thread t_accpet(&Server::run, this);
-	//t_accpet.detach();
+	std::thread t_accpet(&Server::run, this);
+	t_accpet.detach();
 }
 
 void Server::checkClientHeart()
@@ -80,11 +86,49 @@ void Server::checkClientHeart()
 void Server::readMessage(SOCKET c)
 {
 	while (true) {
-		char buffer[1024] = { 0 };
-		int ret = recv(c, buffer, 1024, 0);
+		char buffer[DATA_UNIT * 4] = { 0 };
+		string transBuffer;
+		int ret = recv(c, buffer, DATA_UNIT * 4, 0);
 		if (ret > 0) {
 			m_mapClient[c] = heartCount;
-			std::cout << "readMessage:" << buffer << "from:" << c << std::endl;
+			transBuffer.append(buffer).append("    ");
+			transBuffer.append("from: ").append(to_string(c));
+			
+			// 发送到每个客户端上 转发作用 除了自己
+			ShareMessage(c, transBuffer);
 		}
 	}
+}
+
+bool Server::ShareMessage(SOCKET c, std::string &message)
+{
+	if (c <= 0) {
+		cout << "Server::ShareMessage  para  error!" << endl;
+		return false;
+	}
+	auto iter = m_mapClient.begin();
+	for (; iter != m_mapClient.end(); ++iter) {
+		if ((*iter).first == c)
+			continue;
+		message.append("    ").append(getLocalTime());
+		int ret = send((*iter).first, (char *)message.c_str(), message.length(), 0);
+		if (ret != message.length())
+			cout << " 转发送失败  " << c << endl;
+	}
+	return false;
+}
+
+std::string Server::getLocalTime()
+{
+	time_t rawtime;
+	struct tm *info;
+	char buffer[80];
+
+	time(&rawtime);
+
+	info = localtime(&rawtime);
+
+	strftime(buffer, 80, "%Y-%m-%d %H:%M::%S", info);//以年月日_时分秒的形式表示当前时间
+
+	return buffer;
 }

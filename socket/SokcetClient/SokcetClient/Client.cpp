@@ -27,9 +27,11 @@ void Client::init()
 	SOCKADDR_IN addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(c_port);
-	addr.sin_addr.S_un.S_addr = inet_addr(c_ip);
+	addr.sin_addr.S_un.S_addr = inet_addr(s_ip);
 	int ret = connect(client, (sockaddr*)&addr, sizeof(addr));
 	if (ret == 0) {
+		thread t_recv(&Client::readMessage, this, client);
+		t_recv.detach();
 		sendMessage();
 	}
 	else
@@ -44,5 +46,17 @@ void Client::sendMessage()
 		int ret = send(client, (char *)str.c_str(), str.length(), 0);
 		if (ret != str.length())
 			cout << "·¢ËÍÊ§°Ü" << endl;
+	}
+}
+
+void Client::readMessage(SOCKET c)
+{
+	cout << "Client::readMessage thread load" << endl;
+	while (true) {
+		char buffer[DATA_UNIT * 4] = { 0 };
+		int ret = recv(c, buffer, DATA_UNIT * 4, 0);
+		if (ret < 0)
+			return;
+		cout << buffer << endl;
 	}
 }
