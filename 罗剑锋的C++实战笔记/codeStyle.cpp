@@ -135,4 +135,18 @@ auto str5 = R"==(R"(xxx)")==";// 原样输出：R"(xxx)"
 
 //regex
 
-auto str5 = R"==(R"(xxx)")==";// 原样输出：R"(xxx)"
+auto make_regex = [](const auto& txt)    // 生产正则表达式
+{
+    return std::regex(txt);
+};
+
+auto make_match = []()                  // 生产正则匹配结果
+{
+    return std::smatch();
+};
+
+auto str = "neir:automata"s;          // 待匹配的字符串
+auto reg = 
+    make_regex(R"(^(\w+)\:(\w+)$)");  // 原始字符串定义正则表达式
+auto what = make_match();             // 准备获取匹配的结果
+
