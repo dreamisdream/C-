@@ -1,0 +1,90 @@
+// TestString.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
+//
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+static void InvertUint8(unsigned char* dBuf, unsigned char* srcBuf)
+{
+    int i;
+    unsigned char tmp[4] = { 0 };
+
+    for (i = 0; i < 8; i++)
+    {
+        if (srcBuf[0] & (1 << i))
+            tmp[0] |= 1 << (7 - i);
+    }
+    dBuf[0] = tmp[0];
+
+}
+
+static void InvertUint16(unsigned short* dBuf, unsigned short* srcBuf)
+{
+    int i;
+    unsigned short tmp[4] = { 0 };
+
+    for (i = 0; i < 16; i++)
+    {
+        if (srcBuf[0] & (1 << i))
+            tmp[0] |= 1 << (15 - i);
+    }
+    dBuf[0] = tmp[0];
+}
+
+static unsigned short CRC16_MODBUS(unsigned char* data, unsigned int datalen)
+{
+    unsigned short wCRCin = 0xFFFF;
+    unsigned short wCPoly = 0x8005;
+    unsigned char wChar = 0;
+
+    while (datalen--)
+    {
+        wChar = *(data++);
+        InvertUint8(&wChar, &wChar);
+        wCRCin ^= (wChar << 8);
+        for (int i = 0; i < 8; i++)
+        {
+            if (wCRCin & 0x8000)
+                wCRCin = (wCRCin << 1) ^ wCPoly;
+            else
+                wCRCin = wCRCin << 1;
+        }
+    }
+    InvertUint16(&wCRCin, &wCRCin);
+    return (wCRCin);
+}
+
+int main()
+{
+
+    unsigned char data[15];
+    data[0] = 0x15;
+    data[1] = 0x03;
+    data[2] = 0x0a;
+    data[3] = 0x01;
+    data[4] = 0x51;
+    data[5] = 0x00;
+    data[6] = 0xb4;
+    data[7] = 0x01;
+    data[8] = 0xc3;
+    data[9] = 0x02;
+    data[10] = 0xeb;
+    data[11] = 0;
+    data[12] = 0;
+    data[13] = 0x74;   //crc数据
+    data[14] = 0xb3;
+    
+    // len - 2 
+    unsigned short result = CRC16_MODBUS(data, sizeof(data) - 2);
+
+    unsigned short dataCrc = (unsigned short)*(data + sizeof(data) - 2);
+  //  unsigned char dataCrc2 = (unsigned char)*(data + sizeof(data) - 1);
+
+    printf(" %x \n", dataCrc, dataCrc);
+
+  //  printf("result:%x dateCrc:%x dataCrc2:%x \n", result, dataCrc, dataCrc2);
+
+}
+
